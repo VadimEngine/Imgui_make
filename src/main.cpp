@@ -15,7 +15,6 @@ int main() {
     //Context profiles are only defined for OpenGL version 3.2 and above
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-    //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     // Create a windowed mode window and its OpenGL context
@@ -25,8 +24,10 @@ int main() {
         return -1;
     }
 
+    // Make the window's context current
     glfwMakeContextCurrent(window);
 
+    // Set up imgui
     const char* glsl_version = "#version 330";
 
     IMGUI_CHECKVERSION();
@@ -38,7 +39,6 @@ int main() {
     io.IniFilename = nullptr;
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
     if (!ImGui_ImplGlfw_InitForOpenGL(window, true)) {
@@ -49,16 +49,14 @@ int main() {
         std::cout << "ImGui_ImplOpenGL3_Init failed" << std::endl;
     }
 
-    // Make the window's context current
-
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         // Poll for and process events
         glfwPollEvents();
-        // Render here, e.g. using OpenGL
 
+        // render imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -68,7 +66,7 @@ int main() {
         ImGui::Text("Hello, ImGui!");
         ImGui::End();
 
-        // Rendering
+        //  Finish imgui render
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -76,6 +74,7 @@ int main() {
         glfwSwapBuffers(window);
     }
 
+    // Clean up imgui
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
