@@ -3,6 +3,8 @@ IMGUI_DIR = thirdparty/imgui
 SOURCES = src/main.cpp
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
 SOURCES += $(IMGUI_DIR)/imgui_impl_glfw.cpp $(IMGUI_DIR)/imgui_impl_opengl3.cpp
+SOURCES += $(IMGUI_DIR)/implot.cpp $(IMGUI_DIR)/implot_items.cpp
+
 OBJS = $(addsuffix .o, $(basename $(SOURCES)))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
@@ -15,9 +17,6 @@ CXXFLAGS += `pkg-config --cflags glfw3`
 CFLAGS = $(CXXFLAGS)
 
 %.o:%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-%.o:$(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMGUI_DIR)/%.cpp

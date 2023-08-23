@@ -3,6 +3,32 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "implot.h"
+#include <cmath> 
+
+void buildImgui() {
+    static float values[50];
+    for (int i = 0; i < 50; ++i) {
+        values[i] = 0.5f + 0.4f * cosf((2 * 3.14159265358979323846f / 50) * i + ImGui::GetTime());
+        //values[i] = 0.5f + 0.4f * cosf((2 * 3.14159265358979323846f / 50));
+    }
+    static int start = 0;
+    static int end = 50;
+
+
+    // ImGui content
+    ImGui::Begin("ImGui Window");
+    ImGui::Text("Hello, ImGui!");
+    ImGui::PlotLines("Samples", values, end, start);
+    ImGui::InputInt("Start", &start);
+    ImGui::InputInt("End", &end);
+    ImGui::PlotHistogram("Histogram", values, end, start, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
+    if (ImPlot::BeginPlot("My Plot")) {
+        ImPlot::PlotBars("My Bar Plot", values, 11);
+        ImPlot::EndPlot();
+    }
+    ImGui::End();
+}
 
 int main() {
     // Initialize GLFW
@@ -32,6 +58,7 @@ int main() {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -61,10 +88,7 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // ImGui content
-        ImGui::Begin("ImGui Window");
-        ImGui::Text("Hello, ImGui!");
-        ImGui::End();
+        buildImgui();
 
         //  Finish imgui render
         ImGui::Render();
@@ -77,6 +101,7 @@ int main() {
     // Clean up imgui
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     // Clean up
